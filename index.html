@@ -1,0 +1,493 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Soundboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f0c29;
+            --card-bg: #24243e;
+            --accent: #00f260;
+            --accent-grad: linear-gradient(to right, #0575E6, #021B79);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            text-align: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            font-weight: 800;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: -webkit-linear-gradient(#00f260, #0575E6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 0px 20px rgba(0, 242, 96, 0.3);
+        }
+
+        /* SEARCH BAR */
+        #search-box {
+            padding: 15px;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 50px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            outline: none;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        #search-box:focus {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px #0575E6;
+        }
+
+        /* RANDOM BUTTON */
+        #random-btn {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 20px rgba(255, 75, 43, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        #random-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 15px 30px rgba(255, 75, 43, 0.5); }
+        #random-btn:active { transform: scale(0.95); }
+
+        /* GRID */
+        #board {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* CARDS */
+        .buzzer {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+            padding: 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(5px);
+            word-wrap: break-word;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Hover Effect */
+        .buzzer:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border-color: #00f260;
+            color: white;
+        }
+
+        /* Click Effect */
+        .buzzer:active {
+            transform: scale(0.95);
+            background: #00f260;
+            color: black;
+            box-shadow: 0 0 20px #00f260;
+            border-color: #00f260;
+        }
+
+        /* Playing State (Added by JS) */
+        .playing {
+            background: linear-gradient(45deg, #0575E6, #021B79) !important;
+            border: 1px solid #0575E6 !important;
+            color: white !important;
+            box-shadow: 0 0 15px #0575E6 !important;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(5, 117, 230, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(5, 117, 230, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(5, 117, 230, 0); }
+        }
+
+    </style>
+</head>
+<body>
+    <h1>⚡ SONIC BOARD</h1>
+    
+    <input type="text" id="search-box" placeholder="🔍 Search sounds..." onkeyup="filterSounds()">
+    <br>
+    <button id="random-btn" onclick="playRandom()">🎲 SURPRISE ME</button>
+
+    <div id="board">
+
+        <div class="buzzer" id="btn-track_1.mp3" onclick="play('track_1.mp3')">
+            Sound 1
+        </div>
+        
+        <div class="buzzer" id="btn-track_10.mp3" onclick="play('track_10.mp3')">
+            Sound 10
+        </div>
+        
+        <div class="buzzer" id="btn-track_11.mp3" onclick="play('track_11.mp3')">
+            Sound 11
+        </div>
+        
+        <div class="buzzer" id="btn-track_12.mp3" onclick="play('track_12.mp3')">
+            Sound 12
+        </div>
+        
+        <div class="buzzer" id="btn-track_13.mp3" onclick="play('track_13.mp3')">
+            Sound 13
+        </div>
+        
+        <div class="buzzer" id="btn-track_14.mp3" onclick="play('track_14.mp3')">
+            Sound 14
+        </div>
+        
+        <div class="buzzer" id="btn-track_15.mp3" onclick="play('track_15.mp3')">
+            Sound 15
+        </div>
+        
+        <div class="buzzer" id="btn-track_16.mp3" onclick="play('track_16.mp3')">
+            Sound 16
+        </div>
+        
+        <div class="buzzer" id="btn-track_17.mp3" onclick="play('track_17.mp3')">
+            Sound 17
+        </div>
+        
+        <div class="buzzer" id="btn-track_18.mp3" onclick="play('track_18.mp3')">
+            Sound 18
+        </div>
+        
+        <div class="buzzer" id="btn-track_19.mp3" onclick="play('track_19.mp3')">
+            Sound 19
+        </div>
+        
+        <div class="buzzer" id="btn-track_2.mp3" onclick="play('track_2.mp3')">
+            Sound 2
+        </div>
+        
+        <div class="buzzer" id="btn-track_20.mp3" onclick="play('track_20.mp3')">
+            Sound 20
+        </div>
+        
+        <div class="buzzer" id="btn-track_21.mp3" onclick="play('track_21.mp3')">
+            Sound 21
+        </div>
+        
+        <div class="buzzer" id="btn-track_22.mp3" onclick="play('track_22.mp3')">
+            Sound 22
+        </div>
+        
+        <div class="buzzer" id="btn-track_23.mp3" onclick="play('track_23.mp3')">
+            Sound 23
+        </div>
+        
+        <div class="buzzer" id="btn-track_24.mp3" onclick="play('track_24.mp3')">
+            Sound 24
+        </div>
+        
+        <div class="buzzer" id="btn-track_25.mp3" onclick="play('track_25.mp3')">
+            Sound 25
+        </div>
+        
+        <div class="buzzer" id="btn-track_26.mp3" onclick="play('track_26.mp3')">
+            Sound 26
+        </div>
+        
+        <div class="buzzer" id="btn-track_27.mp3" onclick="play('track_27.mp3')">
+            Sound 27
+        </div>
+        
+        <div class="buzzer" id="btn-track_28.mp3" onclick="play('track_28.mp3')">
+            Sound 28
+        </div>
+        
+        <div class="buzzer" id="btn-track_29.mp3" onclick="play('track_29.mp3')">
+            Sound 29
+        </div>
+        
+        <div class="buzzer" id="btn-track_3.mp3" onclick="play('track_3.mp3')">
+            Sound 3
+        </div>
+        
+        <div class="buzzer" id="btn-track_30.mp3" onclick="play('track_30.mp3')">
+            Sound 30
+        </div>
+        
+        <div class="buzzer" id="btn-track_31.mp3" onclick="play('track_31.mp3')">
+            Sound 31
+        </div>
+        
+        <div class="buzzer" id="btn-track_32.mp3" onclick="play('track_32.mp3')">
+            Sound 32
+        </div>
+        
+        <div class="buzzer" id="btn-track_33.mp3" onclick="play('track_33.mp3')">
+            Sound 33
+        </div>
+        
+        <div class="buzzer" id="btn-track_34.mp3" onclick="play('track_34.mp3')">
+            Sound 34
+        </div>
+        
+        <div class="buzzer" id="btn-track_35.mp3" onclick="play('track_35.mp3')">
+            Sound 35
+        </div>
+        
+        <div class="buzzer" id="btn-track_36.mp3" onclick="play('track_36.mp3')">
+            Sound 36
+        </div>
+        
+        <div class="buzzer" id="btn-track_37.mp3" onclick="play('track_37.mp3')">
+            Sound 37
+        </div>
+        
+        <div class="buzzer" id="btn-track_38.mp3" onclick="play('track_38.mp3')">
+            Sound 38
+        </div>
+        
+        <div class="buzzer" id="btn-track_39.mp3" onclick="play('track_39.mp3')">
+            Sound 39
+        </div>
+        
+        <div class="buzzer" id="btn-track_4.mp3" onclick="play('track_4.mp3')">
+            Sound 4
+        </div>
+        
+        <div class="buzzer" id="btn-track_40.mp3" onclick="play('track_40.mp3')">
+            Sound 40
+        </div>
+        
+        <div class="buzzer" id="btn-track_41.mp3" onclick="play('track_41.mp3')">
+            Sound 41
+        </div>
+        
+        <div class="buzzer" id="btn-track_42.mp3" onclick="play('track_42.mp3')">
+            Sound 42
+        </div>
+        
+        <div class="buzzer" id="btn-track_43.mp3" onclick="play('track_43.mp3')">
+            Sound 43
+        </div>
+        
+        <div class="buzzer" id="btn-track_44.mp3" onclick="play('track_44.mp3')">
+            Sound 44
+        </div>
+        
+        <div class="buzzer" id="btn-track_45.mp3" onclick="play('track_45.mp3')">
+            Sound 45
+        </div>
+        
+        <div class="buzzer" id="btn-track_46.mp3" onclick="play('track_46.mp3')">
+            Sound 46
+        </div>
+        
+        <div class="buzzer" id="btn-track_47.mp3" onclick="play('track_47.mp3')">
+            Sound 47
+        </div>
+        
+        <div class="buzzer" id="btn-track_48.mp3" onclick="play('track_48.mp3')">
+            Sound 48
+        </div>
+        
+        <div class="buzzer" id="btn-track_49.mp3" onclick="play('track_49.mp3')">
+            Sound 49
+        </div>
+        
+        <div class="buzzer" id="btn-track_5.mp3" onclick="play('track_5.mp3')">
+            Sound 5
+        </div>
+        
+        <div class="buzzer" id="btn-track_50.mp3" onclick="play('track_50.mp3')">
+            Sound 50
+        </div>
+        
+        <div class="buzzer" id="btn-track_51.mp3" onclick="play('track_51.mp3')">
+            Sound 51
+        </div>
+        
+        <div class="buzzer" id="btn-track_52.mp3" onclick="play('track_52.mp3')">
+            Sound 52
+        </div>
+        
+        <div class="buzzer" id="btn-track_53.mp3" onclick="play('track_53.mp3')">
+            Sound 53
+        </div>
+        
+        <div class="buzzer" id="btn-track_54.mp3" onclick="play('track_54.mp3')">
+            Sound 54
+        </div>
+        
+        <div class="buzzer" id="btn-track_55.mp3" onclick="play('track_55.mp3')">
+            Sound 55
+        </div>
+        
+        <div class="buzzer" id="btn-track_56.mp3" onclick="play('track_56.mp3')">
+            Sound 56
+        </div>
+        
+        <div class="buzzer" id="btn-track_57.mp3" onclick="play('track_57.mp3')">
+            Sound 57
+        </div>
+        
+        <div class="buzzer" id="btn-track_58.mp3" onclick="play('track_58.mp3')">
+            Sound 58
+        </div>
+        
+        <div class="buzzer" id="btn-track_59.mp3" onclick="play('track_59.mp3')">
+            Sound 59
+        </div>
+        
+        <div class="buzzer" id="btn-track_6.mp3" onclick="play('track_6.mp3')">
+            Sound 6
+        </div>
+        
+        <div class="buzzer" id="btn-track_60.mp3" onclick="play('track_60.mp3')">
+            Sound 60
+        </div>
+        
+        <div class="buzzer" id="btn-track_61.mp3" onclick="play('track_61.mp3')">
+            Sound 61
+        </div>
+        
+        <div class="buzzer" id="btn-track_62.mp3" onclick="play('track_62.mp3')">
+            Sound 62
+        </div>
+        
+        <div class="buzzer" id="btn-track_63.mp3" onclick="play('track_63.mp3')">
+            Sound 63
+        </div>
+        
+        <div class="buzzer" id="btn-track_64.mp3" onclick="play('track_64.mp3')">
+            Sound 64
+        </div>
+        
+        <div class="buzzer" id="btn-track_65.mp3" onclick="play('track_65.mp3')">
+            Sound 65
+        </div>
+        
+        <div class="buzzer" id="btn-track_66.mp3" onclick="play('track_66.mp3')">
+            Sound 66
+        </div>
+        
+        <div class="buzzer" id="btn-track_67.mp3" onclick="play('track_67.mp3')">
+            Sound 67
+        </div>
+        
+        <div class="buzzer" id="btn-track_68.mp3" onclick="play('track_68.mp3')">
+            Sound 68
+        </div>
+        
+        <div class="buzzer" id="btn-track_69.mp3" onclick="play('track_69.mp3')">
+            Sound 69
+        </div>
+        
+        <div class="buzzer" id="btn-track_7.mp3" onclick="play('track_7.mp3')">
+            Sound 7
+        </div>
+        
+        <div class="buzzer" id="btn-track_70.mp3" onclick="play('track_70.mp3')">
+            Sound 70
+        </div>
+        
+        <div class="buzzer" id="btn-track_71.mp3" onclick="play('track_71.mp3')">
+            Sound 71
+        </div>
+        
+        <div class="buzzer" id="btn-track_8.mp3" onclick="play('track_8.mp3')">
+            Sound 8
+        </div>
+        
+        <div class="buzzer" id="btn-track_9.mp3" onclick="play('track_9.mp3')">
+            Sound 9
+        </div>
+        
+    </div>
+    <script>
+        const allSounds = ["track_1.mp3", "track_10.mp3", "track_11.mp3", "track_12.mp3", "track_13.mp3", "track_14.mp3", "track_15.mp3", "track_16.mp3", "track_17.mp3", "track_18.mp3", "track_19.mp3", "track_2.mp3", "track_20.mp3", "track_21.mp3", "track_22.mp3", "track_23.mp3", "track_24.mp3", "track_25.mp3", "track_26.mp3", "track_27.mp3", "track_28.mp3", "track_29.mp3", "track_3.mp3", "track_30.mp3", "track_31.mp3", "track_32.mp3", "track_33.mp3", "track_34.mp3", "track_35.mp3", "track_36.mp3", "track_37.mp3", "track_38.mp3", "track_39.mp3", "track_4.mp3", "track_40.mp3", "track_41.mp3", "track_42.mp3", "track_43.mp3", "track_44.mp3", "track_45.mp3", "track_46.mp3", "track_47.mp3", "track_48.mp3", "track_49.mp3", "track_5.mp3", "track_50.mp3", "track_51.mp3", "track_52.mp3", "track_53.mp3", "track_54.mp3", "track_55.mp3", "track_56.mp3", "track_57.mp3", "track_58.mp3", "track_59.mp3", "track_6.mp3", "track_60.mp3", "track_61.mp3", "track_62.mp3", "track_63.mp3", "track_64.mp3", "track_65.mp3", "track_66.mp3", "track_67.mp3", "track_68.mp3", "track_69.mp3", "track_7.mp3", "track_70.mp3", "track_71.mp3", "track_8.mp3", "track_9.mp3"];
+        let currentAudio = null;
+        let currentBtn = null;
+
+        function play(filename) {
+            // 1. Reset old button style
+            if (currentBtn) {
+                currentBtn.classList.remove('playing');
+            }
+
+            // 2. Stop old audio
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+
+            // 3. Find new button
+            const btnId = "btn-" + filename;
+            const newBtn = document.getElementById(btnId);
+            
+            // 4. Play and Style
+            if (newBtn) {
+                newBtn.classList.add('playing');
+                currentBtn = newBtn;
+            }
+
+            currentAudio = new Audio('sounds/' + filename);
+            currentAudio.play();
+
+            // When sound finishes, remove style
+            currentAudio.onended = function() {
+                if (newBtn) newBtn.classList.remove('playing');
+            };
+        }
+
+        function playRandom() {
+            const randomIndex = Math.floor(Math.random() * allSounds.length);
+            play(allSounds[randomIndex]);
+        }
+
+        function filterSounds() {
+            const input = document.getElementById('search-box');
+            const filter = input.value.toLowerCase();
+            const buttons = document.getElementsByClassName('buzzer');
+
+            for (let i = 0; i < buttons.length; i++) {
+                const txtValue = buttons[i].innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    buttons[i].style.display = "flex";
+                } else {
+                    buttons[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+    
